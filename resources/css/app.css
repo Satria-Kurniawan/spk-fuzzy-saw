@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: "Montserrat", sans-serif;
+}
+
+.input-label {
+    position: absolute;
+    top: -16px;
+    left: 20px;
+    background-color: white;
+    padding: 4px 8px;
+    display: none;
+}
+
+input:focus::placeholder {
+    opacity: 0;
+}
+
+input:focus + .input-label {
+    display: block;
+}
+
+input:not(:placeholder-shown) + .input-label {
+    display: block;
+    color: black;
+}
+
+input:focus:not(:placeholder-shown) + .input-label {
+    display: block;
+    color: #3b82f6;
+}
+
+.select-label {
+    position: absolute;
+    top: -16px;
+    left: 20px;
+    background-color: white;
+    padding: 4px 8px;
+}
+
+select:focus + .select-label {
+    color: #3b82f6;
+}
