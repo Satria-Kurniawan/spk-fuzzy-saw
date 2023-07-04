@@ -40,9 +40,13 @@ class AlternatifController extends Controller
                 'data' => $data
             ]);
 
+            notify()->success('Berhasil menambahkan data alternatif.');
+
             return redirect()->back();
         } catch (\Exception $error) {
-            dd($error);
+            notify()->error($error->getMessage());
+
+            return redirect()->back();
         }
     }
 
@@ -66,9 +70,13 @@ class AlternatifController extends Controller
                 'data' => $data
             ]);
 
+            notify()->success('Berhasil memperbarui data alternatif.');
+
             return redirect()->back();
         } catch (\Exception $error) {
-            dd($error);
+            notify()->error($error->getMessage());
+
+            return redirect()->back();
         }
     }
 
@@ -77,9 +85,13 @@ class AlternatifController extends Controller
             $alternatif = Alternatif::findOrFail($id);
             $alternatif->delete();
 
+            notify()->success('Berhasil menghapus data alternatif.');
+
             return redirect()->back();
         } catch (\Exception $error) {
-            dd($error);
+            notify()->error($error->getMessage());
+
+            return redirect()->back();
         }
     }
 }

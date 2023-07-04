@@ -39,9 +39,13 @@ class FuzzyController extends Controller
                 'id_kriteria' => intval($idKriteria),
             ]);
 
+            notify()->success('Berhasil menambahkan data himpunan fuzzy.');
+
             return redirect()->back();
         } catch (\Exception $error) {
-            dd($error);
+            notify()->error($error->getMessage());
+
+            return redirect()->back();
         }
     }
 
@@ -68,9 +72,13 @@ class FuzzyController extends Controller
                 'id_kriteria' => intval($idKriteria),
             ]);
 
+            notify()->success('Berhasil memperbarui data himpunan fuzzy.');
+
             return redirect()->back();
         } catch (\Exception $error) {
-            dd($error);
+            notify()->error($error->getMessage());
+
+            return redirect()->back();
         }
     }
 
@@ -79,9 +87,13 @@ class FuzzyController extends Controller
             $fuzzy = Fuzzy::findOrFail($id);
             $fuzzy->delete();
 
+            notify()->success('Berhasil menghapus data himpunan fuzzy.');
+
             return redirect()->back();
         } catch (\Exception $error) {
-            dd($error);
+            notify()->error($error->getMessage());
+
+            return redirect()->back();
         }
     }
 }

@@ -33,6 +33,24 @@ class SAWController extends Controller
                                     'Bobot' => $fuzzy['kriteria']['bobot']
                                 ];
                             }
+                        }else if($fuzzy['operator'] === 'Kurang Dari'){
+                            if($alternatifKriteriaValue < $fuzzy['nilai_persyaratan']){
+                                $dataPenilaian[$alternatif['nama']][$alternatifKriteriaKey] = [
+                                    'Keterangan' => $fuzzy['keterangan'],
+                                    'Nilai_Fuzzy' => $fuzzy['nilai_fuzzy'],
+                                    'Atribut' => $fuzzy['kriteria']['is_benefit'] === 1 ? 'Benefit' : 'Cost',
+                                    'Bobot' => $fuzzy['kriteria']['bobot']
+                                ];
+                            }
+                        }else {
+                            if($alternatifKriteriaValue > $fuzzy['nilai_persyaratan']){
+                                $dataPenilaian[$alternatif['nama']][$alternatifKriteriaKey] = [
+                                    'Keterangan' => $fuzzy['keterangan'],
+                                    'Nilai_Fuzzy' => $fuzzy['nilai_fuzzy'],
+                                    'Atribut' => $fuzzy['kriteria']['is_benefit'] === 1 ? 'Benefit' : 'Cost',
+                                    'Bobot' => $fuzzy['kriteria']['bobot']
+                                ];
+                            }
                         }
                     }
                 }
@@ -172,6 +190,18 @@ class SAWController extends Controller
 
         return view('data-perankingan', [
             'dataPerankingan' => $dataPerankingan
+        ]);
+    }
+
+    public function getDataInfo(){
+        $dataKriteria = Kriteria::all();
+        $dataFuzzy = Fuzzy::all();
+        $dataAlternatif = Alternatif::all();
+
+        return view('dashboard', [
+            'dataKriteria' => $dataKriteria,
+            'dataFuzzy' => $dataFuzzy,
+            'dataAlternatif' => $dataAlternatif
         ]);
     }
 }

@@ -1,4 +1,4 @@
-<aside x-data="{ open: true }" x-bind:class="open ? 'w-80' : 'w-20'" class="h-screen sticky top-0 duration-300">
+<aside x-data="{ open: true }" x-bind:class="open ? 'w-80' : 'w-20'" class="h-screen sticky top-0 duration-300 z-50">
     <div class="h-full border-r py-5 relative">
         <div class="px-5 flex items-center gap-x-3">
             <x-bi-bar-chart-line-fill />
@@ -18,7 +18,7 @@
 
         <ul class="mt-16">
             @foreach ($menus as $menu)
-                <li class="py-3 relative">
+                <li class="py-3 relative hover:scale-105 hover:translate-x-3 duration-300">
                     <a href="{{ route($menu->route) }}">
                         <div
                             class="h-full w-[0.4rem] rounded-r-md bg-blue-500 absolute left-0 top-0 {{ Route::is($menu->route) ? 'visible' : 'invisible' }}">
