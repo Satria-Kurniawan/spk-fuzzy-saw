@@ -44,5 +44,9 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
+        <a href="{{ route('register') }}" class="text-start">Don't have account?
+            <span class="text-blue-500">Register here</span>
+        </a>
     </form>
 </x-guest-layout>
