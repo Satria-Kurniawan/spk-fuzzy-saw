@@ -43,7 +43,7 @@
                 <section class="grid grid-cols-2 gap-x-5 gap-y-7 mb-7">
                     <x-text-input :label="'Nama Kriteria'" type="text" name="nama" placeholder="Nama Kriteria"
                         :value="old('nama')" required autofocus x-model="kriteriaFormData.nama" />
-                    <x-text-input :label="'Bobot'" type="number" step="0.01" name="bobot" placeholder="Bobot"
+                    <x-text-input :label="'Bobot'" type="number" step="0.001" name="bobot" placeholder="Bobot"
                         :value="old('bobot')" required x-model="kriteriaFormData.bobot" />
                     <div class="relative">
                         <select name="is_benefit" x-model="kriteriaFormData.is_benefit"
