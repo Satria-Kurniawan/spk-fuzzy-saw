@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alternatif;
 use App\Models\Fuzzy;
 use App\Models\Kriteria;
 use Illuminate\Http\Request;
 
 class KriteriaController extends Controller
 {
-    public function getKriteriaData(){
+    public function getKriteriaData()
+    {
         $dataKriteria = Kriteria::all();
 
         return view('data-kriteria', [
@@ -16,12 +18,13 @@ class KriteriaController extends Controller
         ]);
     }
 
-    public function addKriteria(Request $req){
+    public function addKriteria(Request $req)
+    {
         try {
             $validatedData = $req->validate([
                 'nama' => 'required|string',
                 'bobot' => 'required|numeric',
-                'is_benefit'=> 'required|boolean'
+                'is_benefit' => 'required|boolean'
             ]);
 
             Kriteria::create($validatedData);
@@ -36,40 +39,45 @@ class KriteriaController extends Controller
         }
     }
 
-    public function updateKriteria(Request $req, $id){
+    public function updateKriteria(Request $req, $id)
+    {
         try {
             $validatedData = $req->validate([
                 'nama' => 'required|string',
                 'bobot' => 'required|numeric',
-                'is_benefit'=> 'required|boolean'
+                'is_benefit' => 'required|boolean'
             ]);
 
-            $kriteria = Kriteria::findOrFail($id);
-            $kriteria->update($validatedData);
+            // Dapatkan kriteria lama
+            $kriteriaLama = Kriteria::findOrFail($id);
 
-            notify()->success('Berhasil memperbarui data kriteria');
+            $namaKriteriaLama = str_replace(' ', '_', $kriteriaLama->nama);
+            $namaKriteriaBaru = str_replace(' ', '_', $validatedData['nama']);
 
-            return redirect()->back();
-        } catch (\Exception $error) {
-            notify()->error($error->getMessage());
+            // Dapatkan semua alternatif
+            $alternatifs = Alternatif::all();
 
-            return redirect()->back();
-        }
-    }
+            // Perbarui nilai kriteria lama dengan kriteria baru pada setiap alternatif
+            foreach ($alternatifs as $alternatif) {
+                $data = $alternatif->data;
 
-    public function deleteKriteria($id){
-        try {
-            $dataFuzzy = Fuzzy::where('id_kriteria', $id)->get();
+                // Pastikan kriteria lama ada dalam data alternatif
+                if (isset($data[$namaKriteriaLama])) {
+                    // Buat kunci baru dengan nama kriteria baru dan nilai yang sama
+                    $data[$namaKriteriaBaru] = $data[$namaKriteriaLama];
 
-            if(count($dataFuzzy) !== 0){
-                notify()->error('Kriteria masih digunakan di data himpunan fuzzy, hapus data himpunan fuzzy yang menggunakan kriteria terkait.');
-                return redirect()->back();
+                    // Hapus kunci lama
+                    unset($data[$namaKriteriaLama]);
+
+                    $alternatif->data = $data; // Simpan kembali sebagai string JSON
+                    $alternatif->save();
+                }
             }
 
-            $kriteria = Kriteria::findOrFail($id);
-            $kriteria->delete();
+            // Perbarui kriteria lama dengan data kriteria baru
+            $kriteriaLama->update($validatedData);
 
-            notify()->success('Berhasil menghapus data kriteria');
+            notify()->success('Berhasil memperbarui data kriteria dan mengupdate data pada alternatif yang terkait.');
 
             return redirect()->back();
         } catch (\Exception $error) {
