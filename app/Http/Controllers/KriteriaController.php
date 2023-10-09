@@ -7,6 +7,8 @@ use App\Models\Fuzzy;
 use App\Models\Kriteria;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isEmpty;
+
 class KriteriaController extends Controller
 {
     public function getKriteriaData()
@@ -54,23 +56,35 @@ class KriteriaController extends Controller
             $namaKriteriaLama = str_replace(' ', '_', $kriteriaLama->nama);
             $namaKriteriaBaru = str_replace(' ', '_', $validatedData['nama']);
 
-            // Dapatkan semua alternatif
-            $alternatifs = Alternatif::all();
+            if ($namaKriteriaLama !== $namaKriteriaBaru) {
+                // Dapatkan semua alternatif
+                $alternatifs = Alternatif::all();
 
-            // Perbarui nilai kriteria lama dengan kriteria baru pada setiap alternatif
-            foreach ($alternatifs as $alternatif) {
-                $data = $alternatif->data;
+                // Perbarui nilai kriteria lama dengan kriteria baru pada setiap alternatif
+                foreach ($alternatifs as $alternatif) {
+                    $data = $alternatif->data;
 
-                // Pastikan kriteria lama ada dalam data alternatif
-                if (isset($data[$namaKriteriaLama])) {
-                    // Buat kunci baru dengan nama kriteria baru dan nilai yang sama
-                    $data[$namaKriteriaBaru] = $data[$namaKriteriaLama];
+                    // Pastikan kriteria lama ada dalam data alternatif
+                    if (isset($data[$namaKriteriaLama])) {
+                        // Dapatkan indeks kriteria lama
+                        $indexKriteriaLama = array_search($namaKriteriaLama, array_keys($data));
 
-                    // Hapus kunci lama
-                    unset($data[$namaKriteriaLama]);
+                        // Ganti nama kriteria lama dengan nama kriteria baru jika indeks ditemukan
+                        if ($indexKriteriaLama !== false) {
+                            $keys = array_keys($data);
+                            $values = array_values($data);
 
-                    $alternatif->data = $data; // Simpan kembali sebagai string JSON
-                    $alternatif->save();
+                            // Ganti nama kriteria lama dengan nama kriteria baru
+                            $keys[$indexKriteriaLama] = $namaKriteriaBaru;
+
+                            // Bangun kembali array asosiatif
+                            $data = array_combine($keys, $values);
+
+                            // Simpan kembali sebagai string JSON
+                            $alternatif->data = $data;
+                            $alternatif->save();
+                        }
+                    }
                 }
             }
 
